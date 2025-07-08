@@ -129,7 +129,7 @@ foreach ($divisions as $line) {
             transform: translateY(0);
         }
 
-        /* Content area animations - DEFAULT COLLAPSED */
+        /* Content area animations */
         .content-area {
             max-height: 0;
             overflow: hidden;
