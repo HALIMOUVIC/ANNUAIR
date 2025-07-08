@@ -1,0 +1,8 @@
+[Tue Jul  8 14:59:48 2025] PHP 8.3.6 Development Server (http://localhost:8000) started
+[Tue Jul  8 14:59:50 2025] [::1]:55386 Accepted
+[Tue Jul  8 14:59:50 2025] [::1]:55386 [200]: GET /annuaire.php
+[Tue Jul  8 14:59:50 2025] [::1]:55386 Closing
+[Tue Jul  8 15:00:00 2025] [::1]:33172 Accepted
+[Tue Jul  8 15:00:01 2025] [::1]:33188 Accepted
+[Tue Jul  8 15:00:01 2025] [::1]:33172 [200]: GET /annuaire.php
+[Tue Jul  8 15:00:01 2025] [::1]:33172 Closing
