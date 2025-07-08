@@ -12,180 +12,543 @@ foreach ($divisions as $line) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Annuaire Téléphonique - Arborescence</title>
+    <title>Annuaire Moderne - Interface Professionnelle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'scale-in': 'scaleIn 0.2s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    colors: {
+                        'primary': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        'secondary': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Custom scrollbar for a more modern look */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); max-height: 0; }
+            to { opacity: 1; transform: translateY(0); max-height: 1000px; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 1; transform: translateY(0); max-height: 1000px; }
+            to { opacity: 0; transform: translateY(-20px); max-height: 0; }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Modern Card Styles */
+        .modern-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modern-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            border-color: #0ea5e9;
+        }
+
+        .division-card {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .division-card:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(14, 165, 233, 0.4);
+        }
+
+        .department-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-left: 4px solid #0ea5e9;
+            transition: all 0.3s ease;
+        }
+        
+        .department-card:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-left-color: #0284c7;
+            transform: translateX(4px);
+        }
+
+        .section-item {
+            background: linear-gradient(90deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .section-item:hover {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-color: #0ea5e9;
+        }
+
+        /* Content Animation */
+        .content-expanded {
+            max-height: 2000px;
+            overflow: visible;
+            opacity: 1;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        
+        .content-collapsed {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        /* Search Box */
+        .search-box {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+        
         ::-webkit-scrollbar-track {
-            background: #e0f2f7; /* Light blue track */
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #90cdf4; /* Medium blue thumb */
+            background: #f1f5f9;
             border-radius: 4px;
         }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 4px;
+        }
+        
         ::-webkit-scrollbar-thumb:hover {
-            background: #63b3ed; /* Darker blue on hover */
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         }
 
-        /* Treeview content styling for smooth animation */
-        .tree-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out; /* Smooth collapse */
-        }
-        .tree-content.open {
-            max-height: 1000px; /* A sufficiently large value, adjusted dynamically by JS */
-            transition: max-height 0.5s ease-in; /* Smooth expand */
+        /* Responsive Grid */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
         }
 
-        /* Visual lines for hierarchy */
-        .tree-branch-line {
-            border-left: 1px solid #cbd5e1; /* A subtle light gray line */
-            margin-left: 20px; /* Space for the line and padding */
-            padding-left: 20px; /* Indentation for nested items */
+        @media (max-width: 768px) {
+            .responsive-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-blue-200 min-h-screen flex font-sans antialiased">
-    <aside class="w-64 bg-gradient-to-b from-blue-800 to-blue-700 text-white flex flex-col py-8 px-4 shadow-2xl min-h-screen fixed left-0 top-0 bottom-0 z-20">
-        <div class="flex flex-col items-center mb-10">
-            <div class="bg-blue-300 rounded-full p-4 mb-3 shadow-lg">
-                <i class="fa fa-sitemap text-blue-800 text-3xl"></i>
-            </div>
-            <h2 class="text-2xl font-extrabold text-center tracking-wide">Annuaire PRO</h2>
-        </div>
-        <nav class="flex flex-col gap-3">
-            <a href="index.php" class="flex items-center gap-3 px-4 py-2 rounded-lg text-blue-100 hover:bg-blue-600 transition-all duration-300 ease-in-out group">
-                <i class="fa fa-plus text-lg group-hover:scale-110 transition-transform"></i>
-                <span class="text-lg">Ajouter une division</span>
-            </a>
-            <a href="annuaire.php" class="flex items-center gap-3 px-4 py-2 rounded-lg bg-blue-600 text-white shadow-md">
-                <i class="fa fa-sitemap text-lg"></i>
-                <span class="text-lg">Annuaire</span>
-            </a>
-        </nav>
-        <div class="mt-auto text-xs text-center text-blue-300 pt-8 border-t border-blue-600 mx-4 pt-4">Annuaire &copy; 2025</div>
-    </aside>
-    <main class="flex-1 flex flex-col items-center py-8 ml-64 w-full min-w-0">
-        <div class="w-full max-w-6xl bg-white rounded-3xl shadow-xl p-10 border border-blue-100 transform hover:shadow-2xl transition-all duration-300 ease-in-out">
-            <div class="flex flex-col items-center mb-12">
-                <div class="bg-blue-600 rounded-full p-6 mb-4 shadow-lg">
-                    <i class="fa fa-sitemap text-white text-5xl"></i>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <!-- Modern Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-r from-primary-500 to-primary-600 p-2 rounded-xl">
+                        <i class="fas fa-sitemap text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Annuaire Pro</h1>
+                        <p class="text-sm text-gray-600">Interface Moderne</p>
+                    </div>
                 </div>
-                <h1 class="text-5xl font-extrabold text-center text-blue-800 tracking-tight leading-tight mb-2">Annuaire d'Entreprise</h1>
-                <p class="text-gray-500 text-center mt-2 text-xl font-light">Explorez l'organisation et les contacts de notre annuaire interactif.</p>
-            </div>
-            <ul id="tree-root" class="space-y-4">
-            <?php foreach ($filtered as $i => $div): ?>
-                <li class="bg-blue-50 rounded-lg p-4 shadow-sm border border-blue-100">
-                    <button type="button" class="tree-toggle flex items-center justify-between w-full text-left font-bold text-blue-700 hover:text-blue-900 focus:outline-none" data-target="div-content-<?= $i ?>">
-                        <span class="text-2xl flex items-center"><i class="fa fa-building text-blue-600 mr-3"></i><?= htmlspecialchars($div['division']) ?></span>
-                        <i class="fa fa-chevron-right text-blue-500 transition-transform duration-300"></i>
+                
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Rechercher une division, service ou personne..."
+                            class="search-box w-full pl-10 pr-4 py-2 rounded-xl focus:outline-none"
+                        >
+                    </div>
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="flex items-center space-x-2">
+                    <button id="expandAllBtn" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                        <i class="fas fa-expand-arrows-alt mr-2"></i>Tout déplier
                     </button>
-                    <div id="div-content-<?= $i ?>" class="tree-content">
-                        <div class="py-3 tree-branch-line">
-                            <ul class="space-y-2">
-                                <li><p class="text-gray-700"><span class="font-semibold"><i class="fa fa-user-tie mr-2 text-blue-400"></i>Chef division :</span> <?= htmlspecialchars($div['chef']) ?> <?php if($div['phone']): ?><span class="text-gray-600 text-sm ml-3"><i class="fa fa-phone text-blue-500 mr-2"></i><?= htmlspecialchars($div['phone']) ?></span><?php endif; ?></p></li>
-                                <?php if($div['secretariat']): ?><li><p class="text-gray-700"><span class="font-semibold"><i class="fa fa-user-secret mr-2 text-blue-400"></i>Secrétariat :</span> <?= htmlspecialchars($div['secretariat']) ?></p></li><?php endif; ?>
-                                <?php if($div['ord']): ?><li><p class="text-gray-700"><span class="font-semibold"><i class="fa fa-clipboard-list mr-2 text-blue-400"></i>Ordonnancement :</span> <?= htmlspecialchars($div['ord']) ?></p></li><?php endif; ?>
+                    <button id="collapseAllBtn" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-compress-arrows-alt mr-2"></i>Tout replier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-                                <?php if (!empty($div['departements'])): ?>
-                                    <li class="mt-4">
-                                        <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center"><i class="fa fa-cubes mr-3 text-blue-500"></i>Services :</h3>
-                                        <ul class="space-y-2 tree-branch-line">
-                                        <?php foreach ($div['departements'] as $j => $dep): ?>
-                                            <li>
-                                                <button type="button" class="tree-toggle flex items-center justify-between w-full text-left text-blue-700 hover:text-blue-800 focus:outline-none py-2" data-target="dep-content-<?= $i ?>-<?= $j ?>">
-                                                    <span class="text-lg font-semibold flex items-center"><i class="fa fa-briefcase text-blue-400 mr-3"></i><?= htmlspecialchars($dep['name']) ?></span>
-                                                    <i class="fa fa-chevron-right text-gray-400 transition-transform duration-300"></i>
-                                                </button>
-                                                <div id="dep-content-<?= $i ?>-<?= $j ?>" class="tree-content">
-                                                    <div class="py-2 text-gray-800 tree-branch-line">
-                                                        <ul class="space-y-1">
-                                                            <?php if($dep['phone']): ?><li><p class="text-base"><span class="font-medium"><i class="fa fa-phone text-blue-400 mr-2"></i>Téléphone :</span> <?= htmlspecialchars($dep['phone']) ?></p></li><?php endif; ?>
-                                                            <?php if (!empty($dep['sections'])): ?>
-                                                                <li class="mt-3">
-                                                                    <p class="font-semibold text-base mb-1 flex items-center"><i class="fa fa-sitemap mr-2 text-gray-500"></i>Sections :</p>
-                                                                    <ul class="ml-4 space-y-1">
-                                                                        <?php foreach ($dep['sections'] as $sec): ?>
-                                                                            <li class="flex items-center text-sm py-1">
-                                                                                <i class="fa fa-angle-right text-gray-400 mr-2"></i>
-                                                                                <span class="font-medium"><?= htmlspecialchars($sec['name']) ?></span>
-                                                                                <?php if($sec['phone']): ?><span class="text-gray-500 ml-3"><i class="fa fa-phone text-blue-400 mr-1"></i><?= htmlspecialchars($sec['phone']) ?></span><?php endif; ?>
-                                                                                <?php if(!empty($sec['phone2'])): ?><span class="text-gray-400 ml-2"><i class="fa fa-phone text-blue-300 mr-1"></i><?= htmlspecialchars($sec['phone2']) ?></span><?php endif; ?>
-                                                                            </li>
-                                                                        <?php endforeach; ?>
-                                                                    </ul>
-                                                                </li>
-                                                            <?php endif; ?>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        <?php endforeach; ?>
-                                        </ul>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="modern-card rounded-xl p-6 text-center">
+                <div class="bg-primary-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-building text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900" id="divisionsCount"><?= count($filtered) ?></h3>
+                <p class="text-gray-600">Divisions</p>
+            </div>
+            
+            <div class="modern-card rounded-xl p-6 text-center">
+                <div class="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-briefcase text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900" id="departmentsCount">
+                    <?php 
+                    $deptCount = 0;
+                    foreach ($filtered as $div) {
+                        $deptCount += count($div['departements'] ?? []);
+                    }
+                    echo $deptCount;
+                    ?>
+                </h3>
+                <p class="text-gray-600">Services</p>
+            </div>
+            
+            <div class="modern-card rounded-xl p-6 text-center">
+                <div class="bg-purple-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900" id="sectionsCount">
+                    <?php 
+                    $sectCount = 0;
+                    foreach ($filtered as $div) {
+                        foreach ($div['departements'] ?? [] as $dept) {
+                            $sectCount += count($dept['sections'] ?? []);
+                        }
+                    }
+                    echo $sectCount;
+                    ?>
+                </h3>
+                <p class="text-gray-600">Sections</p>
+            </div>
+        </div>
+
+        <!-- Directory Grid -->
+        <div class="responsive-grid" id="directoryGrid">
+            <?php foreach ($filtered as $i => $div): ?>
+                <div class="division-container animate-fade-in" data-search-content="<?= htmlspecialchars(strtolower($div['division'] . ' ' . $div['chef'] . ' ' . ($div['secretariat'] ?? '') . ' ' . ($div['ord'] ?? ''))) ?>">
+                    <!-- Division Card -->
+                    <div class="division-card rounded-xl p-6 cursor-pointer" data-toggle="division-<?= $i ?>">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-white/20 rounded-lg p-2">
+                                    <i class="fas fa-building text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold"><?= htmlspecialchars($div['division']) ?></h2>
+                                    <p class="text-blue-100">Division</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down transform transition-transform duration-300 division-arrow" data-target="division-<?= $i ?>"></i>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white/10 rounded-lg p-3">
+                                <i class="fas fa-user-tie mb-2 text-blue-200"></i>
+                                <p class="text-blue-100">Chef de division</p>
+                                <p class="font-semibold"><?= htmlspecialchars($div['chef']) ?></p>
+                            </div>
+                            <?php if($div['phone']): ?>
+                            <div class="bg-white/10 rounded-lg p-3">
+                                <i class="fas fa-phone mb-2 text-blue-200"></i>
+                                <p class="text-blue-100">Téléphone</p>
+                                <p class="font-semibold"><?= htmlspecialchars($div['phone']) ?></p>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                </li>
+
+                    <!-- Division Content (Initially Collapsed) -->
+                    <div id="division-<?= $i ?>" class="content-collapsed mt-4 space-y-4">
+                        <!-- Division Info -->
+                        <div class="modern-card rounded-xl p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-info-circle text-primary-500 mr-2"></i>
+                                Informations détaillées
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-user-tie text-primary-500"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Chef de division</p>
+                                        <p class="font-semibold"><?= htmlspecialchars($div['chef']) ?></p>
+                                    </div>
+                                </div>
+                                
+                                <?php if($div['secretariat']): ?>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-user-secret text-primary-500"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Secrétariat</p>
+                                        <p class="font-semibold"><?= htmlspecialchars($div['secretariat']) ?></p>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <?php if($div['ord']): ?>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-clipboard-list text-primary-500"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Ordonnancement</p>
+                                        <p class="font-semibold"><?= htmlspecialchars($div['ord']) ?></p>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <?php if($div['phone']): ?>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-phone text-primary-500"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Téléphone</p>
+                                        <p class="font-semibold"><?= htmlspecialchars($div['phone']) ?></p>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Departments -->
+                        <?php if (!empty($div['departements'])): ?>
+                            <div class="modern-card rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-cubes text-primary-500 mr-2"></i>
+                                    Services (<?= count($div['departements']) ?>)
+                                </h3>
+                                
+                                <div class="space-y-3">
+                                    <?php foreach ($div['departements'] as $j => $dep): ?>
+                                        <div class="department-card rounded-lg p-4 cursor-pointer" data-toggle="dept-<?= $i ?>-<?= $j ?>">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="bg-primary-100 rounded-lg p-2">
+                                                        <i class="fas fa-briefcase text-primary-600"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-semibold text-gray-900"><?= htmlspecialchars($dep['name']) ?></h4>
+                                                        <?php if($dep['phone']): ?>
+                                                            <p class="text-sm text-gray-600">
+                                                                <i class="fas fa-phone text-primary-500 mr-1"></i>
+                                                                <?= htmlspecialchars($dep['phone']) ?>
+                                                            </p>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                                <i class="fas fa-chevron-down transform transition-transform duration-300 dept-arrow" data-target="dept-<?= $i ?>-<?= $j ?>"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Department Content (Initially Collapsed) -->
+                                        <div id="dept-<?= $i ?>-<?= $j ?>" class="content-collapsed ml-8">
+                                            <?php if (!empty($dep['sections'])): ?>
+                                                <div class="space-y-2">
+                                                    <h5 class="font-medium text-gray-700 flex items-center">
+                                                        <i class="fas fa-sitemap text-gray-500 mr-2"></i>
+                                                        Sections (<?= count($dep['sections']) ?>)
+                                                    </h5>
+                                                    <?php foreach ($dep['sections'] as $sec): ?>
+                                                        <div class="section-item rounded-lg p-3 ml-4">
+                                                            <div class="flex items-center justify-between">
+                                                                <div class="flex items-center space-x-3">
+                                                                    <i class="fas fa-angle-right text-gray-400"></i>
+                                                                    <span class="font-medium text-gray-900"><?= htmlspecialchars($sec['name']) ?></span>
+                                                                </div>
+                                                                <div class="flex items-center space-x-4">
+                                                                    <?php if($sec['phone']): ?>
+                                                                        <div class="flex items-center space-x-1 text-sm text-gray-600">
+                                                                            <i class="fas fa-phone text-primary-500"></i>
+                                                                            <span><?= htmlspecialchars($sec['phone']) ?></span>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                    <?php if(!empty($sec['phone2'])): ?>
+                                                                        <div class="flex items-center space-x-1 text-sm text-gray-600">
+                                                                            <i class="fas fa-phone text-green-500"></i>
+                                                                            <span><?= htmlspecialchars($sec['phone2']) ?></span>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             <?php endforeach; ?>
-            </ul>
         </div>
-        <script>
-        // Gestion du treeview interactif
-        document.querySelectorAll('.tree-toggle').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const content = document.getElementById(targetId);
-                const icon = this.querySelector('i.fa-chevron-right'); // Ensure targeting the correct icon
 
-                if (content) {
-                    if (content.classList.contains('open')) {
-                        content.classList.remove('open');
-                        content.style.maxHeight = null; // Collapse
-                        icon.classList.remove('rotate-90');
-                    } else {
-                        // Optional: Close other open siblings at the same level
-                        // This helps keep the view clean by only having one branch open per level
-                        const parentContainer = this.closest('ul');
-                        if (parentContainer) { // Check if parentContainer exists (e.g., for top-level divisions)
-                            parentContainer.querySelectorAll('.tree-content.open').forEach(siblingContent => {
-                                // Ensure we're only closing siblings, not descendants of other siblings or self
-                                if (siblingContent !== content && content.contains(siblingContent) === false) {
-                                    siblingContent.classList.remove('open');
-                                    siblingContent.style.maxHeight = null;
-                                    // Find the corresponding icon for the sibling button
-                                    const siblingButton = siblingContent.previousElementSibling;
-                                    if (siblingButton && siblingButton.classList.contains('tree-toggle')) {
-                                        const siblingIcon = siblingButton.querySelector('i.fa-chevron-right');
-                                        if (siblingIcon) {
-                                            siblingIcon.classList.remove('rotate-90');
-                                        }
-                                    }
-                                }
-                            });
-                        }
+        <!-- No Results Message -->
+        <div id="noResults" class="text-center py-16 hidden">
+            <div class="max-w-md mx-auto">
+                <i class="fas fa-search text-6xl text-gray-400 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucun résultat trouvé</h3>
+                <p class="text-gray-600">Essayez de modifier votre recherche ou d'utiliser d'autres mots-clés.</p>
+            </div>
+        </div>
+    </main>
 
-
-                        content.classList.add('open');
-                        // Calculate scrollHeight dynamically for accurate expansion
-                        // A small timeout ensures rendering before calculation if content is complex
-                        requestAnimationFrame(() => {
-                            content.style.maxHeight = content.scrollHeight + "px";
-                        });
-                        icon.classList.add('rotate-90');
-                    }
+    <!-- JavaScript -->
+    <script>
+        // Enhanced Toggle Functionality
+        function toggleContent(targetId, arrow) {
+            const content = document.getElementById(targetId);
+            const arrowElement = document.querySelector(`[data-target="${targetId}"]`);
+            
+            if (content.classList.contains('content-collapsed')) {
+                // Expand
+                content.classList.remove('content-collapsed');
+                content.classList.add('content-expanded');
+                if (arrowElement) {
+                    arrowElement.classList.add('rotate-180');
                 }
+            } else {
+                // Collapse
+                content.classList.remove('content-expanded');
+                content.classList.add('content-collapsed');
+                if (arrowElement) {
+                    arrowElement.classList.remove('rotate-180');
+                }
+            }
+        }
+
+        // Division Toggle
+        document.querySelectorAll('[data-toggle^="division-"]').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-toggle');
+                const arrow = this.querySelector('.division-arrow');
+                toggleContent(targetId, arrow);
             });
         });
-        </script>
-    </main>
+
+        // Department Toggle
+        document.querySelectorAll('[data-toggle^="dept-"]').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const targetId = this.getAttribute('data-toggle');
+                const arrow = this.querySelector('.dept-arrow');
+                toggleContent(targetId, arrow);
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const directoryGrid = document.getElementById('directoryGrid');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const divisions = document.querySelectorAll('.division-container');
+            let visibleCount = 0;
+
+            divisions.forEach(division => {
+                const content = division.getAttribute('data-search-content');
+                if (content.includes(searchTerm)) {
+                    division.style.display = 'block';
+                    division.classList.add('animate-fade-in');
+                    visibleCount++;
+                } else {
+                    division.style.display = 'none';
+                    division.classList.remove('animate-fade-in');
+                }
+            });
+
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResults.classList.remove('hidden');
+                directoryGrid.classList.add('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                directoryGrid.classList.remove('hidden');
+            }
+        });
+
+        // Expand All / Collapse All
+        document.getElementById('expandAllBtn').addEventListener('click', function() {
+            document.querySelectorAll('.content-collapsed').forEach(content => {
+                content.classList.remove('content-collapsed');
+                content.classList.add('content-expanded');
+            });
+            document.querySelectorAll('.division-arrow, .dept-arrow').forEach(arrow => {
+                arrow.classList.add('rotate-180');
+            });
+        });
+
+        document.getElementById('collapseAllBtn').addEventListener('click', function() {
+            document.querySelectorAll('.content-expanded').forEach(content => {
+                content.classList.remove('content-expanded');
+                content.classList.add('content-collapsed');
+            });
+            document.querySelectorAll('.division-arrow, .dept-arrow').forEach(arrow => {
+                arrow.classList.remove('rotate-180');
+            });
+        });
+
+        // Smooth scroll to section when expanded
+        document.querySelectorAll('[data-toggle]').forEach(element => {
+            element.addEventListener('click', function() {
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            });
+        });
+    </script>
 </body>
 </html>
