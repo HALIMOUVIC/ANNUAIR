@@ -39,7 +39,7 @@ foreach ($divisions as $line) {
             transition: max-height 0.4s ease-out; /* Smooth collapse */
         }
         .tree-content.open {
-            max-height: 1000px; /* A sufficiently large value, adjusted dynamically by JS */
+            max-height: none; /* Remove fixed constraint - will be set dynamically by JS */
             transition: max-height 0.5s ease-in; /* Smooth expand */
         }
 
@@ -139,28 +139,68 @@ foreach ($divisions as $line) {
             </ul>
         </div>
         <script>
+        // Helper function to recalculate height for nested tree structures
+        function recalculateParentHeights(element) {
+            let parent = element.parentElement;
+            while (parent) {
+                const parentTreeContent = parent.closest('.tree-content.open');
+                if (parentTreeContent) {
+                    // Force recalculation of parent height to accommodate nested content
+                    parentTreeContent.style.maxHeight = 'none';
+                    requestAnimationFrame(() => {
+                        parentTreeContent.style.maxHeight = parentTreeContent.scrollHeight + "px";
+                    });
+                }
+                parent = parent.parentElement;
+            }
+        }
+
+        // Helper function to collapse content and all its nested content
+        function collapseContent(content) {
+            content.classList.remove('open');
+            content.style.maxHeight = null;
+            
+            // Also collapse any nested open content
+            content.querySelectorAll('.tree-content.open').forEach(nestedContent => {
+                nestedContent.classList.remove('open');
+                nestedContent.style.maxHeight = null;
+                
+                // Update corresponding icons
+                const nestedButton = nestedContent.previousElementSibling;
+                if (nestedButton && nestedButton.classList.contains('tree-toggle')) {
+                    const nestedIcon = nestedButton.querySelector('i.fa-chevron-right');
+                    if (nestedIcon) {
+                        nestedIcon.classList.remove('rotate-90');
+                    }
+                }
+            });
+        }
+
         // Gestion du treeview interactif
         document.querySelectorAll('.tree-toggle').forEach(button => {
             button.addEventListener('click', function() {
                 const targetId = this.dataset.target;
                 const content = document.getElementById(targetId);
-                const icon = this.querySelector('i.fa-chevron-right'); // Ensure targeting the correct icon
+                const icon = this.querySelector('i.fa-chevron-right');
 
                 if (content) {
                     if (content.classList.contains('open')) {
-                        content.classList.remove('open');
-                        content.style.maxHeight = null; // Collapse
+                        // Collapse content
+                        collapseContent(content);
                         icon.classList.remove('rotate-90');
+                        
+                        // Recalculate parent heights after collapsing
+                        setTimeout(() => {
+                            recalculateParentHeights(content);
+                        }, 100);
                     } else {
                         // Optional: Close other open siblings at the same level
-                        // This helps keep the view clean by only having one branch open per level
                         const parentContainer = this.closest('ul');
-                        if (parentContainer) { // Check if parentContainer exists (e.g., for top-level divisions)
+                        if (parentContainer) {
                             parentContainer.querySelectorAll('.tree-content.open').forEach(siblingContent => {
-                                // Ensure we're only closing siblings, not descendants of other siblings or self
                                 if (siblingContent !== content && content.contains(siblingContent) === false) {
-                                    siblingContent.classList.remove('open');
-                                    siblingContent.style.maxHeight = null;
+                                    collapseContent(siblingContent);
+                                    
                                     // Find the corresponding icon for the sibling button
                                     const siblingButton = siblingContent.previousElementSibling;
                                     if (siblingButton && siblingButton.classList.contains('tree-toggle')) {
@@ -173,13 +213,27 @@ foreach ($divisions as $line) {
                             });
                         }
 
-
+                        // Expand content
                         content.classList.add('open');
-                        // Calculate scrollHeight dynamically for accurate expansion
-                        // A small timeout ensures rendering before calculation if content is complex
+                        
+                        // Calculate height dynamically, accounting for nested content
                         requestAnimationFrame(() => {
-                            content.style.maxHeight = content.scrollHeight + "px";
+                            // Set to auto first to get accurate measurement
+                            content.style.maxHeight = 'auto';
+                            const height = content.scrollHeight;
+                            content.style.maxHeight = '0px';
+                            
+                            // Animate to calculated height
+                            requestAnimationFrame(() => {
+                                content.style.maxHeight = height + "px";
+                            });
+                            
+                            // Recalculate parent heights to accommodate expanded content
+                            setTimeout(() => {
+                                recalculateParentHeights(content);
+                            }, 100);
                         });
+                        
                         icon.classList.add('rotate-90');
                     }
                 }
